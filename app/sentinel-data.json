@@ -1,0 +1,32 @@
+{
+  "services": [
+    {
+      "id": 1,
+      "name": "auth-service",
+      "status": "healthy",
+      "lastChecked": null,
+      "errorMessage": null
+    },
+    {
+      "id": 2,
+      "name": "data-service",
+      "status": "healthy",
+      "lastChecked": null,
+      "errorMessage": null
+    },
+    {
+      "id": 3,
+      "name": "payment-service",
+      "status": "healthy",
+      "lastChecked": null,
+      "errorMessage": null
+    }
+  ],
+  "incidents": [],
+  "resolutions": [],
+  "nextIds": {
+    "services": 4,
+    "incidents": 1,
+    "resolutions": 1
+  }
+}

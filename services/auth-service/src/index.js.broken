@@ -1,0 +1,13 @@
+const express = require('express');
+const app = express();
+
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', service: 'auth-service' });
+});
+
+app.get('/api/auth', (req, res) => {
+  res.json({ authenticated: true, user: 'test-user' });
+});
+
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => console.log('auth-service running on port', PORT));

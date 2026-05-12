@@ -1,0 +1,5 @@
+[2026-05-10 13:25:00] ERROR: payment-service failed to parse config.json - Unexpected token '}'
+[2026-05-10 13:25:01] ERROR: data-service failed to start - Cannot find module 'expreqs'
+[2026-05-10 13:25:02] WARN: auth-service responding slowly - 500ms latency
+[2026-05-10 13:25:05] CRITICAL: payment-service health check failed - Connection refused
+[2026-05-10 13:25:06] CRITICAL: data-service health check failed - Service not responding

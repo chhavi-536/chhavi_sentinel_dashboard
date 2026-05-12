@@ -1,0 +1,51 @@
+name: Test Microservices
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'services/**'
+  pull_request:
+    paths:
+      - 'services/**'
+
+jobs:
+  test-services:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [auth-service, data-service, payment-service]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: services/${{ matrix.service }}
+
+      - name: Lint code
+        run: |
+          npm install -g eslint
+          npx eslint src/ --ext .js
+        working-directory: services/${{ matrix.service }}
+
+      - name: Start service
+        run: node src/index.js &
+        working-directory: services/${{ matrix.service }}
+
+      - name: Wait for service
+        run: sleep 3
+
+      - name: Test health endpoint
+        run: |
+          curl -f http://localhost:3000/health || exit 1
+        working-directory: services/${{ matrix.service }}
+
+      - name: Stop service
+        run: pkill -f "node src/index.js" || true

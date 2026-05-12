@@ -1,0 +1,24 @@
+{
+  "name": "sentinel",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "app",
+    "services/*",
+    "scripts",
+    "db"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=app",
+    "build": "npm run build --workspace=app",
+    "start": "npm run start --workspace=app",
+    "dev:auth": "npm run dev --workspace=services/auth-service",
+    "dev:data": "npm run dev --workspace=services/data-service",
+    "dev:payment": "npm run dev --workspace=services/payment-service",
+    "monitor": "node scripts/update-status.js",
+    "sentinel": "node scripts/start-sentinel.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2"
+  }
+}
