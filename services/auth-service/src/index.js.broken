@@ -5,9 +5,9 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'auth-service' });
 });
 
-app.get('/api/auth', (req, res) => {
-  res.json({ authenticated: true, user: 'test-user' });
+app.get('/api/data', (req, res) => {
+  res.json({ data: 'sample data' });
 });
 
-const PORT = process.env.PORT || 3001;
+const PORT = 9999;
 app.listen(PORT, () => console.log('auth-service running on port', PORT));

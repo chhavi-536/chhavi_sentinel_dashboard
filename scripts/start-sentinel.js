@@ -30,62 +30,40 @@ services.forEach(svc => {
 console.log('\n[STEP 2] Starting monitoring agents...\n');
 
 const updateStatusScript = path.join(__dirname, 'update-status.js');
-const autoResolverScript = path.join(__dirname, 'auto-resolver.js');
+const sentinelAgentScript = path.join(__dirname, 'sentinel-agent.js');
 
 let statusProcess = null;
-let resolverProcess = null;
-let restartCount = 0;
-const MAX_RESTARTS = 5;
+let agentProcess = null;
 
 function startUpdateStatus() {
-  console.log(`[START] Running update-status.js every 45 seconds...`);
+  console.log('[START] Running update-status.js every 45 seconds...');
   statusProcess = spawn('node', [updateStatusScript], {
     cwd: path.join(__dirname, '..'),
     stdio: 'inherit'
   });
 
   statusProcess.on('error', (err) => {
-    console.error(`[ERROR] update-status.js crashed: ${err.message}`);
-    if (restartCount < MAX_RESTARTS) {
-      restartCount++;
-      console.log(`[RESTART] Restarting update-status.js (attempt ${restartCount})...`);
-      setTimeout(startUpdateStatus, 2000);
-    }
-  });
-
-  statusProcess.on('exit', (code) => {
-    console.log(`[EXIT] update-status.js exited with code ${code}`);
-    if (restartCount < MAX_RESTARTS && code !== 0) {
-      restartCount++;
-      console.log(`[RESTART] Restarting update-status.js (attempt ${restartCount})...`);
-      setTimeout(startUpdateStatus, 2000);
-    }
+    console.error('[ERROR] update-status.js crashed: ' + err.message);
   });
 }
 
-function startAutoResolver() {
-  console.log(`[START] Running auto-resolver.js every 60 seconds...`);
-  resolverProcess = spawn('node', [autoResolverScript], {
+function startSentinelAgent() {
+  console.log('[START] Running sentinel-agent.js every 60 seconds...');
+  agentProcess = spawn('node', [sentinelAgentScript], {
     cwd: path.join(__dirname, '..'),
-    stdio: 'inherit'
+    detached: true,
+    stdio: 'ignore'
   });
-
-  resolverProcess.on('error', (err) => {
-    console.error(`[ERROR] auto-resolver.js crashed: ${err.message}`);
-  });
-
-  resolverProcess.on('exit', (code) => {
-    console.log(`[EXIT] auto-resolver.js exited with code ${code}`);
-  });
+  agentProcess.unref();
 }
 
 startUpdateStatus();
-startAutoResolver();
+startSentinelAgent();
 
 console.log('\n╔══════════════════════════════════════════════════════════╗');
 console.log('║  All systems running:                                    ║');
 console.log('║  • update-status.js  - checks services every 45s         ║');
-console.log('║  • auto-resolver.js  - fixes critical services every 60s║');
+console.log('║  • sentinel-agent.js  - fixes critical services every 60s║');
 console.log('║                                                          ║');
 console.log('║  Press Ctrl+C to stop                                    ║');
 console.log('╚══════════════════════════════════════════════════════════╝\n');
@@ -93,13 +71,11 @@ console.log('╚═════════════════════�
 process.on('SIGINT', () => {
   console.log('\n[SHUTDOWN] Stopping all Sentinel processes...');
   if (statusProcess) statusProcess.kill();
-  if (resolverProcess) resolverProcess.kill();
   process.exit(0);
 });
 
 process.on('SIGTERM', () => {
   console.log('\n[SHUTDOWN] Stopping all Sentinel processes...');
   if (statusProcess) statusProcess.kill();
-  if (resolverProcess) resolverProcess.kill();
   process.exit(0);
 });
