@@ -43,7 +43,7 @@ cd services/payment-service && PORT=4003 node src/index.js &
 ### Start dashboard
 ```bash
 cd app && npm run dev
-# Open http://localhost:3002
+# Open http://localhost:3000
 ```
 
 ## Features
@@ -58,14 +58,6 @@ cd app && npm run dev
   3. Missing dependencies
   4. Corrupted JSON
   5. Logic errors
-
-## API Endpoints
-
-| Endpoint | Description |
-|----------|-------------|
-| GET /api/services | Get all service statuses |
-| POST /api/services/update | Update service status |
-| GET /api/incidents | Get active incidents |
 
 ## Phase Execution Guide
 
